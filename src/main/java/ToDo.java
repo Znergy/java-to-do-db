@@ -23,7 +23,8 @@ public class ToDo {
     } else {
       ToDo newTask = (ToDo) otherTask;
       return this.getDescription().equals(newTask.getDescription()) &&
-             this.getId() == newTask.getId();
+             this.getId() == newTask.getId() &&
+             this.getCategoryId() == newTask.getCategoryId();
     }
   }
 
@@ -47,7 +48,7 @@ public class ToDo {
   }
 
   public static List<ToDo> all() {
-    String sql = "SELECT id, description FROM tasks";
+    String sql = "SELECT id, description, categoryId FROM tasks";
     try(Connection con = DB.sql2o.open()) {
       return con.createQuery(sql).executeAndFetch(ToDo.class);
     }
@@ -55,9 +56,10 @@ public class ToDo {
 
   public void save() {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "INSERT INTO tasks(description) VALUES (:description)";
+      String sql = "INSERT INTO tasks(description, categoryId) VALUES (:description, :categoryId)";
       this.id = (int) con.createQuery(sql, true)
         .addParameter("description", this.description)
+        .addParameter("categoryId", this.categoryId)
         .executeUpdate()
         .getKey();
     }

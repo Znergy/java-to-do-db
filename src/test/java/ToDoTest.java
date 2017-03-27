@@ -25,7 +25,7 @@ public class ToDoTest {
   @Test
   public void equals_returnsTrueIfDescriptionsAretheSame() {
     ToDo firstTask = new ToDo("Mow the lawn", 1);
-    ToDo secondTask = new ToDo("Mow the lawn", 2);
+    ToDo secondTask = new ToDo("Mow the lawn", 1);
     assertTrue(firstTask.equals(secondTask));
   }
 

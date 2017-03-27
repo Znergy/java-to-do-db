@@ -1,6 +1,7 @@
 import org.junit.*;
 import static org.junit.Assert.*;
 import org.sql2o.*;
+import java.util.Arrays;
 
 
 public class CategoryTest {
@@ -91,6 +92,18 @@ public class CategoryTest {
     Category secondCategory = new Category("Work");
     secondCategory.save();
     assertEquals(Category.find(secondCategory.getId()), secondCategory);
+  }
+
+  @Test
+  public void getTasks_retrievesAllTasksFromDatabase_taskList(){
+    Category testCategory = new Category("Code school");
+    testCategory.save();
+    ToDo firstTask = new ToDo ("Grow plants", testCategory.getId());
+    firstTask.save();
+    ToDo secondTask = new ToDo ("Wash dishes", testCategory.getId());
+    secondTask.save();
+    ToDo[] tasks = new ToDo[] {firstTask, secondTask};
+    assertTrue(testCategory.getTasks().containsAll(Arrays.asList(tasks)));
   }
   //
   // @Test
