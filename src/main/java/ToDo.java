@@ -7,11 +7,13 @@ public class ToDo {
   private boolean completed;
   private LocalDateTime createdAt;
   private int id;
+  private int categoryId;
 
-  public ToDo(String description) {
+  public ToDo(String description, int categoryId) {
     this.description = description;
     this.completed = false;
     this.createdAt = LocalDateTime.now();
+    this.categoryId = categoryId;
   }
 
   @Override
@@ -23,6 +25,10 @@ public class ToDo {
       return this.getDescription().equals(newTask.getDescription()) &&
              this.getId() == newTask.getId();
     }
+  }
+
+  public int getCategoryId(){
+    return categoryId;
   }
 
   public String getDescription() {

@@ -10,7 +10,9 @@ public class ToDoTest {
   public void tearDown() {
     try(Connection con = DB.sql2o.open()) {
       String sql = "DELETE FROM tasks *;";
+      String deleteCategoriesQuery = "DELETE FROM categories *;";
       con.createQuery(sql).executeUpdate();
+      con.createQuery(deleteCategoriesQuery).executeUpdate();
     }
   }
 
@@ -22,23 +24,23 @@ public class ToDoTest {
   // overriding equals
   @Test
   public void equals_returnsTrueIfDescriptionsAretheSame() {
-    ToDo firstTask = new ToDo("Mow the lawn");
-    ToDo secondTask = new ToDo("Mow the lawn");
+    ToDo firstTask = new ToDo("Mow the lawn", 1);
+    ToDo secondTask = new ToDo("Mow the lawn", 2);
     assertTrue(firstTask.equals(secondTask));
   }
 
   @Test
   public void save_returnsTrueIfDescriptionsAretheSame() {
-    ToDo myTask = new ToDo("Mow the lawn");
+    ToDo myTask = new ToDo("Mow the lawn", 1);
     myTask.save();
     assertTrue(ToDo.all().get(0).equals(myTask));
   }
 
   @Test
   public void all_returnsAllInstancesOfTask_true() {
-    ToDo firstTask = new ToDo("Mow the lawn");
+    ToDo firstTask = new ToDo("Mow the lawn", 1);
     firstTask.save();
-    ToDo secondTask = new ToDo("Buy groceries");
+    ToDo secondTask = new ToDo("Buy groceries", 2);
     secondTask.save();
     assertEquals(true, ToDo.all().get(0).equals(firstTask));
     assertEquals(true, ToDo.all().get(1).equals(secondTask));
@@ -46,7 +48,7 @@ public class ToDoTest {
 
   @Test
   public void save_assignsIdToObject() {
-    ToDo myTask = new ToDo("Mow the lawn");
+    ToDo myTask = new ToDo("Mow the lawn", 1);
     myTask.save();
     ToDo savedTask = ToDo.all().get(0);
     assertEquals(myTask.getId(), savedTask.getId());
@@ -54,18 +56,29 @@ public class ToDoTest {
 
   @Test
   public void getId_tasksInstantiateWithAnID() {
-    ToDo myTask = new ToDo("Mow the lawn");
+    ToDo myTask = new ToDo("Mow the lawn", 1);
     myTask.save();
     assertTrue(myTask.getId() > 0);
   }
 
   @Test
   public void find_returnsTaskWithSameId_secondTask() {
-    ToDo firstTask = new ToDo("Mow the lawn");
+    ToDo firstTask = new ToDo("Mow the lawn", 1);
     firstTask.save();
-    ToDo secondTask = new ToDo("Buy groceries");
+    ToDo secondTask = new ToDo("Buy groceries", 2);
     secondTask.save();
     assertEquals(ToDo.find(secondTask.getId()), secondTask);
+  }
+
+  @Test
+  public void save_savesCategoryIdIntoDB_true(){
+    Category testCategory = new Category("Epicodus");
+    testCategory.save();
+    ToDo testTask = new ToDo("Eat lunch", testCategory.getId());
+    testTask.save();
+    ToDo retrievedTask = ToDo.find(testTask.getId());
+    assertEquals(retrievedTask.getCategoryId(), testCategory.getId());
+
   }
 
 
